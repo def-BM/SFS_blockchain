@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+<<<<<<< HEAD
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import "./responsive.css";
@@ -24,12 +25,21 @@ function App() {
 
   const [newPassword, setNewPassword] = useState("");
 
+=======
+import axios from "axios";
+
+function App() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+>>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
   const [logged, setLogged] = useState(false);
 
   const [file, setFile] = useState(null);
   const [hash, setHash] = useState("");
   const [secret, setSecret] = useState("");
   const [iv, setIv] = useState("");
+<<<<<<< HEAD
   const [history, setHistory] = useState([]);
 
   const [securityQuestion, setSecurityQuestion] = useState("");
@@ -90,6 +100,22 @@ function App() {
       return;
     }
 
+=======
+
+  axios.defaults.withCredentials = true;
+
+  const signup = async () => {
+    await axios.post("http://localhost:5000/signup", { email, password });
+    alert("Signup successful. Now login.");
+  };
+
+  const login = async () => {
+    await axios.post("http://localhost:5000/login", { email, password });
+    setLogged(true);
+  };
+
+  const uploadFile = async () => {
+>>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
     const form = new FormData();
     form.append("file", file);
 
@@ -97,6 +123,7 @@ function App() {
     setHash(res.data.ipfsHash);
     setSecret(res.data.secretKey);
     setIv(res.data.iv);
+<<<<<<< HEAD
 
     alert("File uploaded successfully");
     setFile(null);    
@@ -105,6 +132,10 @@ function App() {
   };
 
   // -------- Download ---------
+=======
+  };
+
+>>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
   const downloadFile = async () => {
     const res = await axios.post(
       "http://localhost:5000/download",
@@ -119,7 +150,10 @@ function App() {
     a.click();
   };
 
+<<<<<<< HEAD
   // -------- Verify ---------
+=======
+>>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
   const verifyFile = async () => {
     const res = await axios.post("http://localhost:5000/verify", {
       hash,
@@ -130,6 +164,7 @@ function App() {
     alert(res.data.verified ? "Authentic" : "Tampered");
   };
 
+<<<<<<< HEAD
   // -------- Preview ---------
   const previewFile = async(file) => {
       const res = await axios.post(
@@ -890,3 +925,44 @@ const rowHover = {
 };
 
 export default App;
+=======
+  if (!logged)
+    return (
+      <div style={{ padding: 40 }}>
+        <h2>Login</h2>
+        <input placeholder="Email" onChange={e => setEmail(e.target.value)} />
+        <br /><br />
+
+        <input placeholder="Password" type="password" onChange={e => setPassword(e.target.value)} />
+        <br /><br />
+
+        <button onClick={signup}>Signup</button>
+        <br /><br />
+        
+        <button onClick={login}>Login</button>
+
+      </div>
+    );
+
+  return (
+    <div style={{ padding: 40 }}>
+      <h2>Secure File Storage</h2>
+
+      <input type="file" onChange={e => setFile(e.target.files[0])} />
+      <br /><br />
+
+      <button onClick={uploadFile}>Upload</button>
+
+      {hash && (
+        <>
+          <p>{hash}</p>
+          <button onClick={downloadFile}>Download</button>
+          <button onClick={verifyFile}>Verify</button>
+        </>
+      )}
+    </div>
+  );
+}
+
+export default App;
+>>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
