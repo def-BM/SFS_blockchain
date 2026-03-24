@@ -10,10 +10,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const app = express();
-<<<<<<< HEAD
+
 require("dotenv").config();
-=======
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
 
 app.use(cors({
   origin: "http://localhost:3000",
@@ -25,38 +23,26 @@ app.use(bodyParser.json());
 
 // ------- Session ---------
 app.use(session({
-<<<<<<< HEAD
   secret: process.env.SESSION_SECRET,
-=======
-  secret: "securefile",
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
   resave: false,
   saveUninitialized: false,
   cookie: {secure: false}
 }));
 
 // ------- MongoDB ---------
-<<<<<<< HEAD
 mongoose.connect(process.env.MONGO_URI)
-=======
-mongoose.connect("mongodb://localhost:27017/SFS_database")
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
+
 .then(() => console.log("MongoDB Connected"))
 .catch(err => console.log(err));
 
 // ------- User Schema ---------
 const UserSchema = new mongoose.Schema({
-<<<<<<< HEAD
   firstName: String,
   lastName: String,
   email: String,
   password: String,
   securityQuestion: String,
   securityAnswer: String
-=======
-  email: String,
-  password: String
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
 });
 
 const User = mongoose.model("User", UserSchema);
@@ -64,7 +50,6 @@ const User = mongoose.model("User", UserSchema);
 // ------- File Schema ---------
 const FileSchema = new mongoose.Schema({
   email: String,
-<<<<<<< HEAD
   fileName: String,
   fileType: String,
   fileSize: Number,
@@ -75,12 +60,6 @@ const FileSchema = new mongoose.Schema({
     email: String,
     permission: String // "read" or "write"
   }],
-
-=======
-  ipfsHash: String,
-  secretKey: String,
-  iv: String,
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
   uploadDate: { type: Date, default: Date.now }
 });
 
@@ -88,11 +67,6 @@ const File = mongoose.model("File", FileSchema);
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-<<<<<<< HEAD
-=======
-const fileOwners = {};
-
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
 // AES Encryption
 function encrypt(buffer) {
   const algorithm = "aes-256-cbc";
@@ -126,29 +100,17 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       {
         headers: {
           ...data.getHeaders(),
-<<<<<<< HEAD
           pinata_api_key: process.env.PINATA_API_KEY,
           pinata_secret_api_key: process.env.PINATA_SECRET_API_KEY,
-=======
-          pinata_api_key: "2cbdedecc09c886bdb00",
-          pinata_secret_api_key: "ae4996594ef8586624e210c145c3845522ffda8ed4fc452b1a25910598ddcdae",
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
         },
       }
     );
 
-<<<<<<< HEAD
     await File.create({
       email: req.session.user,
       fileName: req.file.originalname,
       fileType: req.file.mimetype,
       fileSize: req.file.size,
-=======
-    fileOwners[response.data.IpfsHash] = req.session.user;
-
-    await File.create({
-      email: req.session.user,
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
       ipfsHash: response.data.IpfsHash,
       secretKey: encrypted.key,
       iv: encrypted.iv
@@ -171,7 +133,6 @@ app.post("/download", async (req, res) => {
 
   const { hash, secretKey, iv } = req.body;
 
-<<<<<<< HEAD
   const file = await File.findOne({ 
     ipfsHash: hash,
     $or: [
@@ -181,10 +142,6 @@ app.post("/download", async (req, res) => {
   });
 
   if (!file) return res.status(403).send("Access denied");
-=======
-  if (fileOwners[hash] !== req.session.user)
-  return res.status(403).send("Access denied");
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
 
   try {
 
@@ -218,7 +175,6 @@ app.post("/verify", async (req, res) => {
 
   const { hash, secretKey, iv } = req.body;
 
-<<<<<<< HEAD
   const file = await File.findOne({ 
     ipfsHash: hash,
     $or: [
@@ -228,10 +184,6 @@ app.post("/verify", async (req, res) => {
   });
 
   if (!file) return res.status(403).send("Access denied");
-=======
-  if (fileOwners[hash] !== req.session.user)
-  return res.status(403).send("Access denied");
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
 
   try {
 
@@ -267,24 +219,16 @@ app.post("/verify", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 // -------- Sign up ---------
 app.post("/signup", async (req, res) => {
 
   const { firstName, lastName, email, password, securityQuestion, securityAnswer } = req.body;
-=======
-// -------- Auth ---------
-app.post("/signup", async (req, res) => {
-
-  const { email, password } = req.body;
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
 
   const existing = await User.findOne({ email });
   if (existing) return res.status(400).send("User exists");
 
   const hashed = await bcrypt.hash(password, 10);
 
-<<<<<<< HEAD
   const user = await User.create({ firstName, lastName, email, password: hashed, securityQuestion, securityAnswer });
 
   res.json({ 
@@ -293,13 +237,6 @@ app.post("/signup", async (req, res) => {
 });
 
 // -------- Login ---------
-=======
-  await User.create({ email, password: hashed });
-
-  res.json({ success: true });
-});
-
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
 app.post("/login", async (req, res) => {
 
   const { email, password } = req.body;
@@ -312,7 +249,6 @@ app.post("/login", async (req, res) => {
 
   req.session.user = email;
 
-<<<<<<< HEAD
   res.json({ 
     success: true,
     user: user.firstName + " " + user.lastName });
@@ -334,15 +270,10 @@ app.post("/reset-password", async (req, res) => {
   );
 
   res.json({ success: true });
-
-=======
-  res.json({ success: true });
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
 });
 
 // -------- File History ---------
 app.get("/history", async (req, res) => {
-<<<<<<< HEAD
   try{
     if (!req.session.user) 
       return res.status(401).send("Login first");
@@ -391,14 +322,6 @@ app.get("/shared-files", async (req, res) => {
     }
   });
   res.json(result);
-=======
-  if (!req.session.user) 
-    return res.status(401).send("Login first");
-
-  const files = (await File.find({ email: req.session.user })).toSorted({ uploadDate: -1 });
-
-  res.json(files);
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
 });
 
 app.listen(5000, () => {

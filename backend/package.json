@@ -16,11 +16,7 @@
     "body-parser": "^2.2.2",
     "cors": "^2.8.6",
     "crypto": "^1.0.1",
-<<<<<<< HEAD
     "dotenv": "^17.3.1",
-=======
-    "dotenv": "^17.2.3",
->>>>>>> ef05ee90be3704c039ca0181f870514db7bfde5c
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "form-data": "^4.0.5",
